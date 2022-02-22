@@ -18,7 +18,7 @@ const withdrawlSchema = new mongoose.Schema({
         default: Date
     }
 
-})
+},{versionKey: false})
 
 
 module.exports = mongoose.model('withdrawl' , withdrawlSchema)

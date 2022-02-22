@@ -15,6 +15,6 @@ const settingSchema = new mongoose.Schema({
         type: String
     }
 
-})
+},{versionKey: false})
 
 module.exports = mongoose.model('setting' , settingSchema)
