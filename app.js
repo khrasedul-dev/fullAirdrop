@@ -11,9 +11,9 @@ const startMenu = require('./modules/startMenu')
 const userWizard = require('./modules/userWizard')
 
 
-const bot = new Telegraf('5122442804:AAEsQwUFc97XA_47onoEsS8QBMufFnkE_Js')
+// const bot = new Telegraf('5122442804:AAEsQwUFc97XA_47onoEsS8QBMufFnkE_Js')
 
-// const bot = new Composer()
+const bot = new Composer()
 
 
 
@@ -345,6 +345,6 @@ bot.hears('Help',ctx=>{
 
 
 
-bot.launch()
+// bot.launch()
 
-// module.exports = bot
+module.exports = bot

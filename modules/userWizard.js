@@ -9,9 +9,9 @@ const userModel = require('../model/userModel')
 const startMenu = require('../modules/startMenu')
 
 
-const bot = new Telegraf('5122442804:AAEsQwUFc97XA_47onoEsS8QBMufFnkE_Js')
+// const bot = new Telegraf('5122442804:AAEsQwUFc97XA_47onoEsS8QBMufFnkE_Js')
 
-// const bot = new Composer()
+const bot = new Composer()
 
 
 const settingsId = '6211fe05c190a6ada709821e'
