@@ -236,11 +236,7 @@ const userWizard = new WizardScene('user-wizard',
 
                   settingsModel.find({
                       id: settingsId
-                  }, (e, data) => {
-
-                      if (e) {
-                          console.log(e)
-                      } else {
+                  }).then((data)=>{
 
                           const join_bonus = data[0].join_bounus
 
@@ -254,14 +250,10 @@ const userWizard = new WizardScene('user-wizard',
                           })
 
 
-                          userData.save((e, data) => {
-                              if (e) {
-                                  console.log(e)
-                              }
-                          })
-                      }
+                          userData.save().catch((e)=>console.log(e))
+        
 
-                  })
+                  }).catch((e)=>console.log("Error : Sign up without referral"))
 
 
               }
