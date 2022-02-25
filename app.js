@@ -12,18 +12,11 @@ const settingsModel = require('./model/settingsModel')
 const userModel = require('./model/userModel')
 const withdrawlModel = require('./model/withdrawModel')
 
-
 const startMenu = require('./modules/startMenu')
 const userWizard = require('./modules/userWizard')
 
-
-// const bot = new Telegraf('5122442804:AAEsQwUFc97XA_47onoEsS8QBMufFnkE_Js')
-
 const bot = new Composer()
 
-
-
-// db connection
 mongoose.connect('mongodb+srv://rasedul20:rasedul20@cluster0.ax9se.mongodb.net/airdropBot?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -45,152 +38,111 @@ bot.start(ctx => {
     const userQuery = {
         userId: ctx.from.id
     }
-    userModel.find(userQuery, (e, data) => {
-        if (e) {
-            console.log(e)
+    const data = userModel.find(userQuery)
+    data.then((data) => {
+
+        const hasUser = data.length
+
+        if (hasUser > 0) {
+
+            startMenu(ctx, data)
+
         } else {
 
-            const hasUser = data.length
+            const query = {
+                id: settingsId
+            }
 
-            if (hasUser > 0) {
+            const data2 = settingsModel.find(query)
 
-                startMenu(ctx, data)
+            data2.then((data) => {
 
-            } else {
+                const status = parseInt(data[0].airdrop_status)
 
-                const query = {
-                    id: settingsId
-                }
+                if (status > 0) {
 
-                settingsModel.find(query, (e, data) => {
+                    const referrId = ctx.startPayload
+                    if (referrId) {
+                        const data3 = userModel.find({
+                            userId: referrId
+                        })
+                        data3.then((data) => {
+                            const userdata = new userModel({
+                                referr_id: referrId,
+                                userId: ctx.from.id,
+                                referr_by: data[0].name
+                            })
 
-                    if (e) {
+                            const data4 = userdata.save()
+                            data4.then((data) => {
+                                const data5 = settingsModel.find({
+                                    id: settingsId
+                                })
 
-                        console.log(e)
+                                data5.then((data) => {
+
+                                    const join_bonus = data[0].join_bounus
+                                    const referral_bounus = data[0].referral_bounus
+                                    const coin_name = data[0].coin_name
+
+                                    ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \nWellcome to our AirdropBot \n\n⚡ Get ${join_bonus} ${coin_name} Join Bonus \n👮 Earn ${referral_bounus} ${coin_name} for each referral \n\nComplete some tasks and win your rewards \n\nPlease tap on join button`, {
+                                        reply_markup: {
+                                            keyboard: [
+                                                [{
+                                                    text: "💻 Join Airdrop"
+                                                }]
+                                            ],
+                                            resize_keyboard: true
+                                        },
+                                        parse_mode: "HTML"
+                                    })
+
+                                }).catch((e) => console.log(' Settings : error to add refer bounous'))
+
+                            }).catch((e) => console.log(' User :  error to add refer bounous'))
+
+                        })
 
                     } else {
 
-                        const status = parseInt(data[0].airdrop_status)
+                        const data8 = settingsModel.find({
+                            id: settingsId
+                        })
 
+                        data8.then((data) => {
 
-                        if (status > 0) {
+                            const join_bonus = data[0].join_bounus
+                            const referral_bounus = data[0].referral_bounus
+                            const coin_name = data[0].coin_name
 
-                            const referrId = ctx.startPayload
-
-                            if (referrId) {
-
-
-                                userModel.find({
-                                    userId: referrId
-                                }, (e, data) => {
-
-                                    if (e) {
-
-                                        console.log(e)
-
-                                    } else {
-
-                                        const userdata = new userModel({
-
-                                            referr_id: referrId,
-                                            userId: ctx.from.id,
-                                            referr_by: data[0].name
-
-                                        })
-
-                                        userdata.save((e, data) => {
-
-                                            if (e) {
-
-                                                console.log(e)
-
-                                            } else {
-
-                                                settingsModel.find({
-                                                    id: settingsId
-                                                }, (e, data) => {
-                                                    if (e) {
-                                                        console.log(e)
-                                                    } else {
-
-                                                        const join_bonus = data[0].join_bounus
-                                                        const referral_bounus = data[0].referral_bounus
-                                                        const coin_name = data[0].coin_name
-
-
-                                                        ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \nWellcome to our AirdropBot \n\n⚡ Get ${join_bonus} ${coin_name} Join Bonus \n👮 Earn ${referral_bounus} ${coin_name} for each referral \n\nComplete some tasks and win your rewards \n\nPlease tap on join button`, {
-                                                            reply_markup: {
-                                                                keyboard: [
-                                                                    [{
-                                                                        text: "💻 Join Airdrop"
-                                                                    }]
-                                                                ],
-                                                                resize_keyboard: true
-                                                            },
-                                                            parse_mode: "HTML"
-                                                        })
-
-                                                    }
-                                                })
-
-
-
-
-                                            }
-
-                                        })
-
-
-                                    }
-                                })
-
-
-                            } else {
-
-                                settingsModel.find({
-                                    id: settingsId
-                                }, (e, data) => {
-                                    if (e) {
-                                        console.log(e)
-                                    } else {
-
-                                        const join_bonus = data[0].join_bounus
-                                        const referral_bounus = data[0].referral_bounus
-                                        const coin_name = data[0].coin_name
-
-
-                                        ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \nWellcome to our AirdropBot \n\n⚡ Get ${join_bonus} ${coin_name} Join Bonus \n👮 Earn ${referral_bounus} ${coin_name} for each referral \n\nComplete some tasks and win your rewards \n\nPlease tap on join button`, {
-                                            reply_markup: {
-                                                keyboard: [
-                                                    [{
-                                                        text: "💻 Join Airdrop"
-                                                    }]
-                                                ],
-                                                resize_keyboard: true
-                                            },
-                                            parse_mode: "HTML"
-                                        })
-
-                                    }
-
-                                })
-
-                            }
-
-                        } else {
-
-                            ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \nWellcome to our AirdropBot \n\nThe airdrop has been close.\n \nFor more update Join our <a href="https://t.me/amdg_global">Telegram group</a> . \nWe will come back soon. \n\nStay with us \nThank you`, {
+                            ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \nWellcome to our AirdropBot \n\n⚡ Get ${join_bonus} ${coin_name} Join Bonus \n👮 Earn ${referral_bounus} ${coin_name} for each referral \n\nComplete some tasks and win your rewards \n\nPlease tap on join button`, {
+                                reply_markup: {
+                                    keyboard: [
+                                        [{
+                                            text: "💻 Join Airdrop"
+                                        }]
+                                    ],
+                                    resize_keyboard: true
+                                },
                                 parse_mode: "HTML"
+                            })
 
-                            }).catch((e) => console.log(e))
-                        }
+                        })
 
                     }
 
-                })
+                } else {
 
-            }
+                    ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \nWellcome to our AirdropBot \n\nThe airdrop has been close.\n \nFor more update Join our <a href="https://t.me/amdg_global">Telegram group</a> . \nWe will come back soon. \n\nStay with us \nThank you`, {
+                        parse_mode: "HTML"
+
+                    }).catch((e) => console.log(e))
+                }
+
+            }).catch((e) => console.log("Setting : error on airdrop close"))
+
         }
+
     })
 
 })
