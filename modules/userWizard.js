@@ -22,7 +22,21 @@ bot.use(session())
 
 
 const userWizard = new WizardScene('user-wizard',
+    (ctx)=>{
+
+        ctx.telegram.sendMessage(ctx.chat.id , "Are you sure to share your phone number with us?", {
+            reply_markup: {
+                keyboard: [
+                    [{text: "I agree" , request_contact: true}]
+                ]
+            }
+        })
+    },
   (ctx) => {
+
+    ctx.session.user = {}
+
+    ctx.session.user.phone = ctx.update.message.text
 
       ctx.telegram.sendMessage(ctx.chat.id, `<b>Task 1:</b> \n\n1. Kindly join our <a href="https://t.me/amdg_global">Telegram group</a> \n2. Join our <a href="https://t.me/AMDGCommunityID">Telegram community</a> \n\nThen tap on button next`, {
           reply_markup: {
