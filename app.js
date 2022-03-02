@@ -346,7 +346,7 @@ bot.hears('Help', ctx => {
 bot.hears('Claim Rewards',ctx=>{
 
     const presentTime = Date.now()
-    const t = 60000
+    const t = 86400000
 
     settingsModel.find({id: settingsId}).then((data)=>{
 
