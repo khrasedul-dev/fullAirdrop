@@ -318,7 +318,7 @@ bot.hears("Back", ctx => {
 
 
 bot.hears('Help', ctx => {
-    ctx.telegram.sendMessage(ctx.chat.id, `<b>For Help:</b> \n\nA. Please join our <a href="https://t.me/amdg_global">Telegram group</a> \nB. Join our <a href="https://t.me/AMDGCommunityID">Telegram community</a> \n\nThen tap on button next`, {
+    ctx.telegram.sendMessage(ctx.chat.id, `<b>For Help:</b> \n\n Please join our <a href="https://t.me/amdg_global">Telegram group</a> \nJoin our <a href="https://t.me/AMDGCommunityID">Telegram community</a>`, {
         reply_markup: {
             keyboard: [
                 [{
