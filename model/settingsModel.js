@@ -13,6 +13,9 @@ const settingSchema = new mongoose.Schema({
     },
     coin_name: {
         type: String
+    },
+    daily_reward: {
+        type: String
     }
 
 },{versionKey: false})

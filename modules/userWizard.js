@@ -31,12 +31,14 @@ const userWizard = new WizardScene('user-wizard',
                 ]
             }
         })
+
+        return ctx.wizard.next()
     },
   (ctx) => {
 
     ctx.session.user = {}
 
-    ctx.session.user.phone = ctx.update.message.text
+    ctx.session.user.phone = ctx.update.message.contact.phone_number
 
       ctx.telegram.sendMessage(ctx.chat.id, `<b>Task 1:</b> \n\n1. Kindly join our <a href="https://t.me/amdg_global">Telegram group</a> \n2. Join our <a href="https://t.me/AMDGCommunityID">Telegram community</a> \n\nThen tap on button next`, {
           reply_markup: {
@@ -202,6 +204,7 @@ const userWizard = new WizardScene('user-wizard',
                               name: ctx.from.first_name,
                               wallet: ctx.update.message.text,
                               balance: join_bonus,
+                              phone: ctx.session.user.phone,
                               ref_link: "https://t.me/" + ctx.botInfo.username + "?start=" + ctx.from.id,
                               referralCount: 0
                           }
@@ -259,6 +262,7 @@ const userWizard = new WizardScene('user-wizard',
                               name: ctx.from.first_name,
                               wallet: ctx.update.message.text,
                               balance: join_bonus,
+                              phone: ctx.session.user.phone,
                               ref_link: "https://t.me/" + ctx.botInfo.username + "?start=" + ctx.from.id,
                               referralCount: 0
                           })

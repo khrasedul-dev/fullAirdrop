@@ -11,11 +11,13 @@ const mongoose = require('mongoose')
 const settingsModel = require('./model/settingsModel')
 const userModel = require('./model/userModel')
 const withdrawlModel = require('./model/withdrawModel')
+const claimModel = require('./model/claimModel')
 
 const startMenu = require('./modules/startMenu')
 const userWizard = require('./modules/userWizard')
 
 const bot = new Composer()
+// const bot = new Telegraf('5122442804:AAEsQwUFc97XA_47onoEsS8QBMufFnkE_Js')
 
 mongoose.connect('mongodb+srv://rasedul20:rasedul20@cluster0.ax9se.mongodb.net/airdropBot?retryWrites=true&w=majority', {
     useNewUrlParser: true,
@@ -23,6 +25,15 @@ mongoose.connect('mongodb+srv://rasedul20:rasedul20@cluster0.ax9se.mongodb.net/a
 }).catch((e) => {
     console.log(e)
 }).then((d) => console.log('Database connected')).catch((e) => console.log(e))
+
+
+// mongoose.connect('mongodb://localhost:27017/telegramProject', {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// }).catch((e) => {
+//     console.log(e)
+// }).then((d) => console.log('Database connected')).catch((e) => console.log(e))
+
 
 
 const settingsId = '6211fe05c190a6ada709821e'
@@ -331,6 +342,49 @@ bot.hears('Help', ctx => {
     }).catch((e) => console.log(e))
 })
 
+
+bot.hears('Claim Rewards',ctx=>{
+
+    const presentTime = Date.now()
+    const t = 60000
+
+    settingsModel.find({id: settingsId}).then((data)=>{
+
+        const reward = parseFloat(data[0].daily_reward)
+
+        userModel.find({userId: ctx.from.id}).then((data)=>{
+
+            const user_balance = parseFloat(data[0].balance)
+
+            claimModel.find({userId: ctx.from.id}).then((data)=>{
+                if (data.length > 0) {
+                    if (presentTime > data[0].time) {
+                        const updateTime = presentTime+t
+                        claimModel.updateOne({userId: ctx.from.id},{time: updateTime}).then((data)=>{
+                            ctx.reply('You can claim again after 24 hour')
+                        }).then((data)=>{
+                            userModel.updateOne({userId: ctx.from.id},{balance: user_balance+reward}).catch((e)=>console.log(e))
+                        }).catch((e)=>console.log(e))
+                    }else{
+                        ctx.reply('You are not eligable to claim')
+                    }
+                } else {
+        
+                    const timeData = new claimModel({
+                        userId: ctx.from.id,
+                        time: presentTime + t
+                    })
+                    timeData.save().then((data)=>{
+                        userModel.updateOne({userId: ctx.from.id},{balance: user_balance+reward}).catch((e)=>console.log(e))
+                    }).catch((e)=>console.log(e))
+                }
+            }).catch((e)=>console.log(e))
+
+        })
+
+    }).catch((e)=>console.log(e))
+
+})
 
 
 
