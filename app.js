@@ -308,14 +308,8 @@ bot.hears("Back", ctx => {
             ctx.telegram.sendMessage(ctx.chat.id, `Hello ${ctx.from.first_name} \n\nAccount information: \nUserId: ${data[0].userId} \nName: ${data[0].name}`, {
                 reply_markup: {
                     keyboard: [
-                        [{
-                            text: "Withdraw"
-                        }, {
-                            text: "My account"
-                        }],
-                        [{
-                            text: "Help"
-                        }]
+                        [{text: "Claim Rewards"},{text: "Withdraw"}],
+                        [{text: "My account"},{text: "Help"}]
                     ],
                     resize_keyboard: true
                 }
@@ -375,7 +369,7 @@ bot.hears('Claim Rewards',ctx=>{
                         time: presentTime + t
                     })
                     timeData.save().then((data)=>{
-                        userModel.updateOne({userId: ctx.from.id},{balance: user_balance+reward}).catch((e)=>console.log(e))
+                        userModel.updateOne({userId: ctx.from.id},{balance: user_balance+reward}).then((data)=>ctx.reply('You can claim again after 24 hour')).catch((e)=>console.log(e))
                     }).catch((e)=>console.log(e))
                 }
             }).catch((e)=>console.log(e))
