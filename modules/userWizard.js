@@ -167,21 +167,6 @@ const userWizard = new WizardScene('user-wizard',
 
   (ctx) => {
 
-      ctx.telegram.sendMessage(ctx.chat.id, `<b>Task 8:</b> \n\n1. Enter your ERC-20 Crypto wallet address `, {
-          reply_markup: {
-              remove_keyboard: true
-          },
-          parse_mode: "HTML"
-      }).catch((e) => console.log(e))
-
-      return ctx.wizard.next()
-
-  },
-
-
-
-  (ctx) => {
-
 
 
       userModel.find({
@@ -202,7 +187,7 @@ const userWizard = new WizardScene('user-wizard',
 
                           const userInfoData = {
                               name: ctx.from.first_name,
-                              wallet: ctx.update.message.text,
+                              wallet: 0,
                               balance: join_bonus,
                               phone: ctx.session.user.phone,
                               ref_link: "https://t.me/" + ctx.botInfo.username + "?start=" + ctx.from.id,
@@ -260,7 +245,7 @@ const userWizard = new WizardScene('user-wizard',
                           const userData = new userModel({
                               userId: ctx.from.id,
                               name: ctx.from.first_name,
-                              wallet: ctx.update.message.text,
+                              wallet: 0,
                               balance: join_bonus,
                               phone: ctx.session.user.phone,
                               ref_link: "https://t.me/" + ctx.botInfo.username + "?start=" + ctx.from.id,
